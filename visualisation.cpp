@@ -40,6 +40,9 @@ void Visualisation::initColors() {
 
     init_pair(12, COLOR_BLACK, COLOR_BLACK);
 
+    init_pair(13, COLOR_CYAN, COLOR_CYAN);
+
+    init_pair(14, COLOR_MAGENTA, COLOR_MAGENTA);
 
     bkgd(COLOR_PAIR(1));
 }
@@ -100,11 +103,7 @@ void Visualisation::drawWall(Wall *wall) {
 
             PaintColor paintColor = segmentToDraw->getPaintColor(j);
             move(wallBottomY - j, wallBottomX + i);
-            if(paintColor == RED) {
-                attron(COLOR_PAIR(9));
-            } else {
-                attron(COLOR_PAIR(10));
-            }
+            setDrawingColor(paintColor);
             addch('x');
 
         }
@@ -141,6 +140,101 @@ void Visualisation::drawArtistsNearWall(Artist** artists, int numberOfArtists) {
         }
     }
 
+}
+
+void Visualisation::drawArtistsTable(Artist** artists, int numberOfArtists) {
+
+    const int tableTopLeftX = 60;
+    const int tableTopLeftY = 2;
+
+    for(int i = 0 ; i < numberOfArtists ; i++) {
+        move(tableTopLeftY + i, tableTopLeftX);
+        attron(COLOR_PAIR(11));
+        addch('0' + artists[i]->getIdentifier());
+        addch(' ');
+
+        PaintCan paintCan = artists[i]->getPaintCan();
+
+        int j = 0;
+        for(;j < paintCan.getCurrentCapacity() ; j++) {
+            setDrawingColor(paintCan.getColor());
+            addch('x');
+        }
+        for(;j < paintCan.getTotalCapacity(); j++) {
+            attron(COLOR_PAIR(12)); // gray
+            addch('x');
+        }
+
+    }
+}
+
+void Visualisation::drawArtistsWaiting(Artist** artists, int numberOfArtists) {
+
+    const int waitingBottomX = 5;
+    const int waitingBottomY = 10;
+
+    int index = 0;
+    for(int i = 0 ; i < numberOfArtists ; i++) {
+        if(artists[i]->getState() == WaitingForWall) {
+
+            move(waitingBottomY + 2, waitingBottomX + index * 2);
+            attron(COLOR_PAIR(5));
+            addch('x');
+
+            move(waitingBottomY + 3, waitingBottomX + index * 2);
+            attron(COLOR_PAIR(8));
+            addch('0' + artists[i]->getIdentifier());
+
+            index++;
+        }
+    }
+}
+
+
+void Visualisation::drawArtistsWaitingForRefill(Artist** artists, int numberOfArtists) {
+
+    const int waitingForRefillBottomX = 10;
+    const int waitingForRefillBottomY = 15;
+
+    int index = 0;
+    for(int i = 0 ; i < numberOfArtists ; i++) {
+        if(artists[i]->getState() == WaitingForRefill) {
+
+            move(waitingForRefillBottomY + 2, waitingForRefillBottomX + index * 2);
+            attron(COLOR_PAIR(5));
+            addch('x');
+
+            move(waitingForRefillBottomY + 3, waitingForRefillBottomX + index * 2);
+            attron(COLOR_PAIR(8));
+            addch('0' + artists[i]->getIdentifier());
+
+            index++;
+        }
+    }
+
+}
+
+
+void Visualisation::drawCleanersWaiting(Cleaner** cleaners, int numberOfCleaners) {
+
+    const int waitingBottomX = 50;
+    const int waitingBottomY = 10;
+
+    int index = 0;
+    for(int i = 0 ; i < numberOfCleaners ; i++) {
+        if(cleaners[i]->getState() == CWaitingForWall) {
+
+            move(waitingBottomY + 2, waitingBottomX + index * 2);
+            attron(COLOR_PAIR(5));
+            addch('x');
+
+            move(waitingBottomY + 3, waitingBottomX + index * 2);
+            attron(COLOR_PAIR(11));
+            addch('0' + cleaners[i]->getIdentifier());
+
+            index++;
+        }
+    }
 }
 
 
@@ -220,6 +314,24 @@ void Visualisation::drawMap() {
 
 }
 
+
+void Visualisation::setDrawingColor(PaintColor paintColor) {
+    switch(paintColor) {
+        case RED:
+            attron(COLOR_PAIR(9));
+            break;
+        case GREEN:
+            attron(COLOR_PAIR(10));
+            break;
+        case CYAN:
+            attron(COLOR_PAIR(13));
+            break;
+        case MAGENTA:
+            attron(COLOR_PAIR(14));
+            break;
+        }
+}
+
 void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cleaner** cleaners, int numberOfCleaners) {
 
     loadMap();
@@ -229,18 +341,19 @@ void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cle
     nodelay(stdscr, TRUE);
     for (;;) {
         if ((ch = getch()) != 27) {
-
             clear();
             drawMap();
 
-            drawWall(wall);
-            drawArtistsNearWall(artists, numberOfArtists);
-            drawCleanersNearWall(cleaners, numberOfCleaners);
+            drawArtistsTable(artists, numberOfArtists);
 
-            // DBG number of free segments
-            move(10,10);
-            attron(COLOR_PAIR(1));
-            printw(std::to_string(wall->getFreeSegmentsCount()).c_str());
+            drawWall(wall);
+
+            drawArtistsNearWall(artists, numberOfArtists);
+            drawArtistsWaiting(artists, numberOfArtists);
+            drawArtistsWaitingForRefill(artists, numberOfArtists);
+
+            drawCleanersNearWall(cleaners, numberOfCleaners);
+            drawCleanersWaiting(cleaners, numberOfCleaners);
 
             timeout(125);
         }

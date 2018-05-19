@@ -3,8 +3,8 @@
 #include <thread>
 #include <chrono>
 
-int Artist::randomnessRange = 2000;
-int Artist::randomnessBase = 2000;
+int Artist::randomnessRange = 2000;//200;//0;
+int Artist::randomnessBase = 2000;//200;//0;
 
 Artist::Artist(int identifier, Wall* wall) : identifier(identifier),
     wall(wall), isRunning(true), currentProgress(0), paintCan(GREEN, 2)
@@ -30,15 +30,14 @@ void Artist::waitNSteps(int n, int stepTime) {
 
 void Artist::lifeCycle() {
 
-    // thinking
     int stepTime = randomStepTime();
 
     while(this->isRunning) {
 
+        this->state = WaitingForWall;
         waitNSteps(10, stepTime);
 
-        // finished thinking - will wait for forks
-        this->state = Waiting;
+        this->state = WaitingForWall;
 
         if(paintCan.getCurrentCapacity() != 0) {
             // paint can not empty
@@ -50,6 +49,8 @@ void Artist::lifeCycle() {
                 std::this_thread::sleep_for (std::chrono::milliseconds(50));
                 this->standingBy = wall->aquireWallSegmentToPaint();
             }
+
+            this->state = Painting;
 
             // paint logic
             int initialCoverage = this->standingBy->getPaintCoverage();
@@ -69,21 +70,26 @@ void Artist::lifeCycle() {
             wall->releaseSegment(this->standingBy);
             this->standingBy = nullptr;
 
-        } else {
-            // TODO go refill
-            this->refillPaint();
-
-            waitNSteps(3, stepTime);
         }
 
-        this->state = Thinking;
+        if(paintCan.getCurrentCapacity() == 0){
+            this->state = WaitingForRefill;
+            waitNSteps(10, stepTime);
+
+            this->refillPaint();
+        }
 
     }
 
 }
 
 void Artist::refillPaint() {
-    this->paintCan = PaintCan(RED, 70);
+
+    int a = rand() % 4;
+    PaintColor color = a == 0 ? RED : a == 1 ? GREEN : a == 2 ? MAGENTA : CYAN;
+    int size = rand() % 2 ? 4 : 8;
+
+    this->paintCan = PaintCan(color, size);
 }
 
 void Artist::stop() {

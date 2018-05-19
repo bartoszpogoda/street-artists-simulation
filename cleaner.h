@@ -8,7 +8,7 @@
 class Wall;
 
 enum CleanerState {
-    CThinking, CEating, CWaiting, CLeftForkAquired, CRightForkAquired
+    CWaitingForWall, Cleaning
 };
 
 class Cleaner
@@ -25,13 +25,8 @@ private:
 
     int currentProgress; // out of 10
 
-    // actual time divided by 10
-    int randomThinkingStepTime();
-
-    // actual time divided by 10
-    int randomEatingStepTime();
-
-    void wait10Times(int stepTime);
+    int randomStepTime();
+    void waitNSteps(int n, int stepTime);
 
 public:
     Cleaner(int identifier, Wall* wall);

@@ -3,30 +3,25 @@
 #include <thread>
 #include <chrono>
 
-int Cleaner::randomnessRange = 2000;
-int Cleaner::randomnessBase = 2000;
+int Cleaner::randomnessRange = 200;//0;
+int Cleaner::randomnessBase = 200;//0;
 
 Cleaner::Cleaner(int identifier, Wall* wall) : identifier(identifier),
     wall(wall), isRunning(true), currentProgress(0)
 {
 }
 
-int Cleaner::randomThinkingStepTime() {
-    return (randomnessBase + rand() % randomnessRange)/10;
-}
-
-
-int Cleaner::randomEatingStepTime() {
+int Cleaner::randomStepTime() {
     return (randomnessBase + rand() % randomnessRange)/10;
 }
 
 
 /**
- * @brief Philosopher::wait10Times sleeps for 10x specified time while incrementing current progress after each step
+ * @brief Cleaner::wait10Times sleeps for 10x specified time while incrementing current progress after each step
  * @param stepTime time of each step in miliseconds
  */
-void Cleaner::wait10Times(int stepTime) {
-    for(currentProgress = 0; currentProgress < 10 && this->isRunning ; currentProgress++) {
+void Cleaner::waitNSteps(int n, int stepTime) {
+    for(currentProgress = 0; currentProgress < n && this->isRunning ; currentProgress++) {
         std::this_thread::sleep_for (std::chrono::milliseconds(stepTime));
     }
     currentProgress = 0;
@@ -35,39 +30,37 @@ void Cleaner::wait10Times(int stepTime) {
 
 void Cleaner::lifeCycle() {
 
+    int stepTime = randomStepTime();
+
     while(this->isRunning) {
 
-        // thinking
-        int thinkingStepTime = randomThinkingStepTime();
-        wait10Times(thinkingStepTime);
-
-        // finished thinking - will wait for forks
-        this->state = CWaiting;
+        this->state = CWaitingForWall;
 
         this->standingBy= wall->aquireWallSegmentToClean();
-//        takeForks();
 
         while(this->standingBy == nullptr) {
-            //
             std::this_thread::sleep_for (std::chrono::milliseconds(50));
             this->standingBy = wall->aquireWallSegmentToClean();
         }
 
-        // forks aquired, eataing
-        this->state = CEating;
+        this->state = Cleaning;
 
-        int eatingStepTime = randomEatingStepTime();
-        wait10Times(eatingStepTime);
+        // paint logic
+        int initialCoverage = this->standingBy->getPaintCoverage();
 
-        // test
-        this->standingBy->setPaintCoverage(0);
+        waitNSteps(1, stepTime);
 
-//        releaseForks();
+        // while anything to paint and not tired(todo)
+        for(int i = initialCoverage; i > 0; i--) {
+            this->standingBy->setPaintCoverage(i - 1);
+
+            waitNSteps(3, stepTime);
+        }
+
         wall->releaseSegment(this->standingBy);
         this->standingBy = nullptr;
 
-
-        this->state = CThinking;
+        this->state = CWaitingForWall;
 
     }
 

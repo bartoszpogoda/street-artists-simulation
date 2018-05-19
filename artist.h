@@ -5,7 +5,7 @@
 #include "paintcan.h"
 
 enum ArtistState {
-    Thinking, Eating, Waiting, LeftForkAquired, RightForkAquired
+    WaitingForWall, Painting, WaitingForRefill
 };
 
 class Artist
@@ -24,7 +24,6 @@ private:
 
     int currentProgress; // out of 10
 
-    // actual time divided by 10
     int randomStepTime();
     void waitNSteps(int n, int stepTime);
 
@@ -40,6 +39,8 @@ public:
     WallSegment* getStandingBy() { return this->standingBy; }
 
     int getIdentifier() { return this->identifier; }
+
+    PaintCan getPaintCan() { return this->paintCan; }
 
     void lifeCycle();
 

@@ -2,7 +2,7 @@
 #define COLORS_H
 
 enum PaintColor {
-    RED, GREEN
+    RED, GREEN, MAGENTA, CYAN
 };
 
 #endif // COLORS_H

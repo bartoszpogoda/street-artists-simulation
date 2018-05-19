@@ -20,8 +20,19 @@ private:
 
     void drawLegend();
 
+    void drawArtistsTable(Artist** artists, int numberOfArtists);
+
     void drawArtistsNearWall(Artist** artists, int numberOfArtists);
+    void drawArtistsWaiting(Artist** artists, int numberOfArtists);
+    void drawArtistsWaitingForRefill(Artist** artists, int numberOfArtists);
+
+
     void drawCleanersNearWall(Cleaner** cleaners, int numberOfCleaners);
+
+
+    void drawCleanersWaiting(Cleaner** cleaners, int numberOfCleaners);
+
+    void setDrawingColor(PaintColor paintColor);
 
     void drawWall(Wall* wall);
 

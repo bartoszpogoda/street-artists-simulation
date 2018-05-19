@@ -11,9 +11,9 @@
 #include "visualisation.h"
 
 const int width = 7;
-const int height = 3;
-const int numberOfArtists = 5;
-const int numberOfCleaners = 3;
+const int height = 10;//5;
+const int numberOfArtists = 6;
+const int numberOfCleaners = 2;
 
 Wall* createWall() {
     return new Wall(width, height);
