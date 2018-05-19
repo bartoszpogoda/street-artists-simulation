@@ -64,6 +64,7 @@ void Cleaner::lifeCycle() {
 
 //        releaseForks();
         wall->releaseSegment(this->standingBy);
+        this->standingBy = nullptr;
 
 
         this->state = CThinking;

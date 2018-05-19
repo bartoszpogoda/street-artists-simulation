@@ -9,12 +9,11 @@
 #include "artist.h"
 #include "cleaner.h"
 #include "visualisation.h"
-#include "fork.h"
 
 const int width = 7;
 const int height = 3;
 const int numberOfArtists = 5;
-const int numberOfCleaners = 1;
+const int numberOfCleaners = 3;
 
 Wall* createWall() {
     return new Wall(width, height);
@@ -63,7 +62,7 @@ int main(int argc, char *argv[])
     std::cout << "d";
 
     Visualisation visualisation = Visualisation();
-    visualisation.start(wall, artists, cleaners);
+    visualisation.start(wall, artists, numberOfArtists, cleaners, numberOfCleaners);
 
     // after ESC was pressed
     for(int i = 0 ; i < numberOfArtists ; i++) {

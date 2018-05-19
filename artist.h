@@ -1,8 +1,8 @@
 #ifndef ARTIST_H
 #define ARTIST_H
 
-#include "fork.h"
 #include "wall.h"
+#include "paintcan.h"
 
 enum ArtistState {
     Thinking, Eating, Waiting, LeftForkAquired, RightForkAquired
@@ -18,21 +18,17 @@ private:
 
     WallSegment* standingBy;
 
+    PaintCan paintCan;
+
     std::atomic<ArtistState> state;
 
     int currentProgress; // out of 10
 
     // actual time divided by 10
-    int randomThinkingStepTime();
+    int randomStepTime();
+    void waitNSteps(int n, int stepTime);
 
-    // actual time divided by 10
-    int randomEatingStepTime();
-
-    void wait10Times(int stepTime);
-
-    void takeForks();
-
-    void releaseForks();
+    void refillPaint();
 
 public:
     Artist(int identifier, Wall* wall);
@@ -42,6 +38,8 @@ public:
     int getCurrentProgress() { return this->currentProgress; }
 
     WallSegment* getStandingBy() { return this->standingBy; }
+
+    int getIdentifier() { return this->identifier; }
 
     void lifeCycle();
 

@@ -42,6 +42,8 @@ public:
 
     WallSegment* getStandingBy() { return this->standingBy; }
 
+    int getIdentifier() { return this->identifier; }
+
     void lifeCycle();
 
     void stop();

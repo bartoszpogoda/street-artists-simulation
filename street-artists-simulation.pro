@@ -6,7 +6,6 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     visualisation.cpp \
-    fork.cpp \
     wallsegment.cpp \
     wall.cpp \
     cleaner.cpp \
@@ -16,9 +15,13 @@ LIBS += -lncurses
 
 HEADERS += \
     visualisation.h \
-    fork.h \
     wallsegment.h \
     wall.h \
     cleaner.h \
     artist.h \
-    colors.h
+    colors.h \
+    paintcan.h
+
+DISTFILES += \
+    map.txt \
+    build/map.txt
