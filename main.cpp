@@ -11,7 +11,7 @@
 #include "visualisation.h"
 #include "fork.h"
 
-const int width = 2;
+const int width = 7;
 const int height = 3;
 const int numberOfArtists = 5;
 const int numberOfCleaners = 1;
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     std::cout << "d";
 
     Visualisation visualisation = Visualisation();
-    visualisation.start(wall, artists);
+    visualisation.start(wall, artists, cleaners);
 
     // after ESC was pressed
     for(int i = 0 ; i < numberOfArtists ; i++) {

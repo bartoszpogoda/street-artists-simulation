@@ -25,6 +25,16 @@ void Visualisation::initColors() {
 
     init_pair(6, COLOR_CYAN, COLOR_BLACK);
 
+    init_pair(7, COLOR_WHITE, COLOR_WHITE);
+
+    init_pair(8, COLOR_WHITE, COLOR_RED);
+
+    init_pair(9, COLOR_RED, COLOR_RED);
+
+    init_pair(10, COLOR_GREEN, COLOR_GREEN);
+
+    init_pair(11, COLOR_WHITE, COLOR_BLUE);
+
     bkgd(COLOR_PAIR(1));
 }
 
@@ -69,6 +79,95 @@ void Visualisation::drawLegend() {
 
 }
 
+void Visualisation::drawWall(Wall *wall) {
+
+    const int wallBottomX = 20;
+    const int wallBottomY = 10;
+
+    WallSegment** wallSegments = wall->getWallSegments();
+
+    for(int i = 0 ; i < wall->getWidth() * 3 ; i++) {
+        WallSegment* segmentToDraw = wallSegments[i/3];
+        // painted
+        int j = 0;
+        for(; j < segmentToDraw->getPaintCoverage() ; j++) {
+
+            PaintColor paintColor = segmentToDraw->getPaintColor(j);
+            move(wallBottomY - j, wallBottomX + i);
+            if(paintColor == RED) {
+                attron(COLOR_PAIR(9));
+            } else {
+                attron(COLOR_PAIR(10));
+            }
+            addch('x');
+
+        }
+
+        // clean
+        for(; j < segmentToDraw->getHeight() ; j++) {
+
+
+            move(wallBottomY - j, wallBottomX + i);
+            attron(COLOR_PAIR(7));
+            addch('x');
+        }
+    }
+
+}
+
+void Visualisation::drawArtistsNearWall(Artist** artists) {
+
+    // TODO make this a parameter to the function (artistsLenght)
+    int n = 5;
+
+    const int wallBottomX = 20;
+    const int wallBottomY = 10;
+
+    for(int i = 0 ; i < n ; i++) {
+        if(artists[i]->getStandingBy() != nullptr) {
+            int position = artists[i]->getStandingBy()->getPosition();
+
+            move(wallBottomY + 2, wallBottomX + position*3 + 1);
+            attron(COLOR_PAIR(5));
+            addch('x');
+
+            move(wallBottomY + 3, wallBottomX + position*3 + 1);
+            attron(COLOR_PAIR(8));
+            addch('A');
+
+        }
+    }
+
+}
+
+
+void Visualisation::drawCleanersNearWall(Cleaner** cleaners) {
+
+    // TODO make this a parameter to the function (cleanersLength)
+    int n = 1;
+
+    const int wallBottomX = 20;
+    const int wallBottomY = 10;
+
+    for(int i = 0 ; i < n ; i++) {
+        if(cleaners[i]->getStandingBy() != nullptr) {
+            int position = cleaners[i]->getStandingBy()->getPosition();
+
+            move(wallBottomY + 2, wallBottomX + position*3 + 1);
+            attron(COLOR_PAIR(5));
+            addch('x');
+
+            move(wallBottomY + 3, wallBottomX + position*3 + 1);
+            attron(COLOR_PAIR(11));
+            addch('C');
+
+        }
+    }
+
+}
+
+
+
 //void Visualisation::drawTimeRangePanel() {
 
 //    attron(COLOR_PAIR(6));
@@ -93,7 +192,7 @@ Visualisation::~Visualisation(){
     endwin();
 }
 
-void Visualisation::start(Wall* wall, Artist** artists) {
+void Visualisation::start(Wall* wall, Artist** artists, Cleaner** cleaners) {
 
 //    drawLegend();
 
@@ -114,6 +213,12 @@ void Visualisation::start(Wall* wall, Artist** artists) {
 //            }
 
 //            drawTimeRangePanel();
+
+            clear();
+
+            drawWall(wall);
+            drawArtistsNearWall(artists);
+            drawCleanersNearWall(cleaners);
 
             for(int i = 0 ; i < 5; i++) {
                 ArtistState state = artists[i]->getState();

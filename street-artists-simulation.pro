@@ -20,4 +20,5 @@ HEADERS += \
     wallsegment.h \
     wall.h \
     cleaner.h \
-    artist.h
+    artist.h \
+    colors.h

@@ -34,6 +34,9 @@ public:
     void releaseSegment(WallSegment* wallSegment);
 
     int getFreeSegmentsCount() { return this->freeSegments; }
+    WallSegment** getWallSegments() { return this->wallSegments; }
+    int getWidth() { return this->width; }
+    int getHeight() { return this->height; }
 };
 
 #endif // WALL_H

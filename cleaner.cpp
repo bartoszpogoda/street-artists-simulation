@@ -44,13 +44,13 @@ void Cleaner::lifeCycle() {
         // finished thinking - will wait for forks
         this->state = CWaiting;
 
-        WallSegment* usedWallSegment = wall->aquireWallSegmentToClean();
+        this->standingBy= wall->aquireWallSegmentToClean();
 //        takeForks();
 
-        while(usedWallSegment == nullptr) {
+        while(this->standingBy == nullptr) {
             //
             std::this_thread::sleep_for (std::chrono::milliseconds(50));
-            usedWallSegment = wall->aquireWallSegmentToClean();
+            this->standingBy = wall->aquireWallSegmentToClean();
         }
 
         // forks aquired, eataing
@@ -60,10 +60,10 @@ void Cleaner::lifeCycle() {
         wait10Times(eatingStepTime);
 
         // test
-        usedWallSegment->setPaintCoverage(0);
+        this->standingBy->setPaintCoverage(0);
 
 //        releaseForks();
-        wall->releaseSegment(usedWallSegment);
+        wall->releaseSegment(this->standingBy);
 
 
         this->state = CThinking;

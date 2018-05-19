@@ -44,26 +44,38 @@ void Artist::lifeCycle() {
         // finished thinking - will wait for forks
         this->state = Waiting;
 
-        WallSegment* usedWallSegment = wall->aquireWallSegmentToPaint();
+        this->standingBy = wall->aquireWallSegmentToPaint();
 //        takeForks();
 
-        while(usedWallSegment == nullptr) {
+        while(this->standingBy == nullptr) {
             //
             std::this_thread::sleep_for (std::chrono::milliseconds(50));
-            usedWallSegment = wall->aquireWallSegmentToPaint();
+            this->standingBy = wall->aquireWallSegmentToPaint();
         }
 
         // forks aquired, eataing
         this->state = Eating;
 
+
+
         int eatingStepTime = randomEatingStepTime();
         wait10Times(eatingStepTime);
 
+
+
         // test
-        usedWallSegment->setPaintCoverage(3);
+        this->standingBy->setPaintCoverage(3);
+        this->standingBy->setPaintColor(0, RED);
+        this->standingBy->setPaintColor(1, RED);
+        this->standingBy->setPaintColor(2, RED);
+
+
+        eatingStepTime = randomEatingStepTime();
+        wait10Times(eatingStepTime);
 
 //        releaseForks();
-        wall->releaseSegment(usedWallSegment);
+        wall->releaseSegment(this->standingBy);
+        this->standingBy = nullptr;
 
 
         this->state = Thinking;

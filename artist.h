@@ -16,6 +16,8 @@ private:
 
     Wall* wall;
 
+    WallSegment* standingBy;
+
     std::atomic<ArtistState> state;
 
     int currentProgress; // out of 10
@@ -38,6 +40,8 @@ public:
     ArtistState getState() { return this->state; }
 
     int getCurrentProgress() { return this->currentProgress; }
+
+    WallSegment* getStandingBy() { return this->standingBy; }
 
     void lifeCycle();
 
