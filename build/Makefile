@@ -53,13 +53,17 @@ SOURCES       = ../main.cpp \
 		../wallsegment.cpp \
 		../wall.cpp \
 		../cleaner.cpp \
-		../artist.cpp 
+		../artist.cpp \
+		../paintsupply.cpp \
+		../supplier.cpp 
 OBJECTS       = main.o \
 		visualisation.o \
 		wallsegment.o \
 		wall.o \
 		cleaner.o \
-		artist.o
+		artist.o \
+		paintsupply.o \
+		supplier.o
 DIST          = ../map.txt \
 		map.txt \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -120,12 +124,16 @@ DIST          = ../map.txt \
 		cleaner.h \
 		artist.h \
 		colors.h \
-		paintcan.h ../main.cpp \
+		paintcan.h \
+		paintsupply.h \
+		supplier.h ../main.cpp \
 		../visualisation.cpp \
 		../wallsegment.cpp \
 		../wall.cpp \
 		../cleaner.cpp \
-		../artist.cpp
+		../artist.cpp \
+		../paintsupply.cpp \
+		../supplier.cpp
 QMAKE_TARGET  = street-artists-simulation
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = street-artists-simulation
@@ -308,8 +316,10 @@ main.o: ../main.cpp ../artist.h \
 		../wallsegment.h \
 		../colors.h \
 		../paintcan.h \
+		../paintsupply.h \
 		../cleaner.h \
-		../visualisation.h
+		../visualisation.h \
+		../supplier.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../main.cpp
 
 visualisation.o: ../visualisation.cpp ../visualisation.h \
@@ -318,6 +328,7 @@ visualisation.o: ../visualisation.cpp ../visualisation.h \
 		../wallsegment.h \
 		../colors.h \
 		../paintcan.h \
+		../paintsupply.h \
 		../cleaner.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o visualisation.o ../visualisation.cpp
 
@@ -341,8 +352,20 @@ artist.o: ../artist.cpp ../artist.h \
 		../wall.h \
 		../wallsegment.h \
 		../colors.h \
-		../paintcan.h
+		../paintcan.h \
+		../paintsupply.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o artist.o ../artist.cpp
+
+paintsupply.o: ../paintsupply.cpp ../paintsupply.h \
+		../paintcan.h \
+		../colors.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o paintsupply.o ../paintsupply.cpp
+
+supplier.o: ../supplier.cpp ../supplier.h \
+		../paintsupply.h \
+		../paintcan.h \
+		../colors.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o supplier.o ../supplier.cpp
 
 ####### Install
 

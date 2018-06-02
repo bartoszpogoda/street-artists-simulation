@@ -3,9 +3,10 @@
 
 #include "wall.h"
 #include "paintcan.h"
+#include "paintsupply.h"
 
 enum ArtistState {
-    WaitingForWall, Painting, WaitingForRefill
+    WaitingForWall, Painting, WaitingForRefill, Refilling
 };
 
 class Artist
@@ -18,11 +19,15 @@ private:
 
     WallSegment* standingBy;
 
+    PaintSupply* paintSupply;
+
     PaintCan paintCan;
 
     std::atomic<ArtistState> state;
 
     int currentProgress; // out of 10
+
+    int stepTime;
 
     int randomStepTime();
     void waitNSteps(int n, int stepTime);
@@ -30,7 +35,7 @@ private:
     void refillPaint();
 
 public:
-    Artist(int identifier, Wall* wall);
+    Artist(int identifier, Wall* wall, PaintSupply* paintSupply);
 
     ArtistState getState() { return this->state; }
 

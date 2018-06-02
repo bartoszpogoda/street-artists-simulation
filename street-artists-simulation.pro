@@ -9,7 +9,9 @@ SOURCES += main.cpp \
     wallsegment.cpp \
     wall.cpp \
     cleaner.cpp \
-    artist.cpp
+    artist.cpp \
+    paintsupply.cpp \
+    supplier.cpp
 
 LIBS += -lncurses
 
@@ -20,7 +22,9 @@ HEADERS += \
     cleaner.h \
     artist.h \
     colors.h \
-    paintcan.h
+    paintcan.h \
+    paintsupply.h \
+    supplier.h
 
 DISTFILES += \
     map.txt \

@@ -25,6 +25,9 @@ private:
     void drawArtistsNearWall(Artist** artists, int numberOfArtists);
     void drawArtistsWaiting(Artist** artists, int numberOfArtists);
     void drawArtistsWaitingForRefill(Artist** artists, int numberOfArtists);
+    void drawArtistRefilling(Artist** artists, int numberOfArtists);
+
+    void drawPaintSupply(PaintSupply* paintSupply);
 
 
     void drawCleanersNearWall(Cleaner** cleaners, int numberOfCleaners);
@@ -33,6 +36,7 @@ private:
     void drawCleanersWaiting(Cleaner** cleaners, int numberOfCleaners);
 
     void setDrawingColor(PaintColor paintColor);
+    void setDrawingColorWithLabel(PaintColor paintColor);
 
     void drawWall(Wall* wall);
 
@@ -40,7 +44,7 @@ public:
     Visualisation();
     ~Visualisation();
 
-    void start(Wall* wall, Artist** artists, int numberOfArtists, Cleaner** cleaners, int numberOfCleaners);
+    void start(Wall* wall, Artist** artists, int numberOfArtists, Cleaner** cleaners, int numberOfCleaners, PaintSupply* paintSupply);
 
 };
 

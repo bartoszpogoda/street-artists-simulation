@@ -44,6 +44,19 @@ void Visualisation::initColors() {
 
     init_pair(14, COLOR_MAGENTA, COLOR_MAGENTA);
 
+    init_pair(15, COLOR_WHITE, COLOR_MAGENTA);
+
+
+    init_pair(16, COLOR_WHITE, COLOR_RED);
+
+    init_pair(17, COLOR_WHITE, COLOR_GREEN);
+
+    init_pair(18, COLOR_WHITE, COLOR_CYAN);
+
+    init_pair(19, COLOR_WHITE, COLOR_MAGENTA);
+
+
+
     bkgd(COLOR_PAIR(1));
 }
 
@@ -193,8 +206,8 @@ void Visualisation::drawArtistsWaiting(Artist** artists, int numberOfArtists) {
 
 void Visualisation::drawArtistsWaitingForRefill(Artist** artists, int numberOfArtists) {
 
-    const int waitingForRefillBottomX = 10;
-    const int waitingForRefillBottomY = 15;
+    const int waitingForRefillBottomX = 28;
+    const int waitingForRefillBottomY = 20;
 
     int index = 0;
     for(int i = 0 ; i < numberOfArtists ; i++) {
@@ -209,6 +222,31 @@ void Visualisation::drawArtistsWaitingForRefill(Artist** artists, int numberOfAr
             addch('0' + artists[i]->getIdentifier());
 
             index++;
+        }
+    }
+
+}
+
+void Visualisation::drawArtistRefilling(Artist** artists, int numberOfArtists) {
+
+    const int refillBottomX = 25;
+    const int refillBottomY = 20;
+
+    int index = 0;
+    for(int i = 0 ; i < numberOfArtists ; i++) {
+        if(artists[i]->getState() == Refilling) {
+
+            move(refillBottomY + 2, refillBottomX);
+            attron(COLOR_PAIR(5));
+            addch('x');
+
+            move(refillBottomY + 3, refillBottomX);
+            attron(COLOR_PAIR(8));
+            addch('0' + artists[i]->getIdentifier());
+
+            index++;
+
+            return;
         }
     }
 
@@ -261,6 +299,34 @@ void Visualisation::drawCleanersNearWall(Cleaner** cleaners, int numberOfCleaner
 }
 
 
+void Visualisation::drawPaintSupply(PaintSupply* paintSupply) {
+
+    const int suplyRightX = 17;
+    const int supplyRightY = 22;
+
+
+    move(20,5);
+    if(paintSupply->isEmpty() || paintSupply->isFull()) {
+        attron(COLOR_PAIR(8));
+    } else {
+        attron(COLOR_PAIR(15));
+    }
+    printw("Paint Supply");
+
+    std::deque<PaintCan>* deque = paintSupply->getDequeToDraw();
+
+    for(int i = 0 ; i < deque->size() ; i++) {
+        PaintCan toDraw = deque->at(i);
+
+        move(supplyRightY,suplyRightX - i);
+        setDrawingColorWithLabel(toDraw.getColor());
+
+        addch('0' + toDraw.getTotalCapacity());
+    }
+
+}
+
+
 Visualisation::~Visualisation(){
     endwin();
 }
@@ -304,6 +370,8 @@ void Visualisation::drawMap() {
                 attron(COLOR_PAIR(12));
             } else if(map[i][j] == 'G') {
                 attron(COLOR_PAIR(10));
+            } else if(map[i][j] == 'P') {
+                attron(COLOR_PAIR(14));
             } else {
                 attron(COLOR_PAIR(2));
             }
@@ -332,7 +400,24 @@ void Visualisation::setDrawingColor(PaintColor paintColor) {
         }
 }
 
-void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cleaner** cleaners, int numberOfCleaners) {
+void Visualisation::setDrawingColorWithLabel(PaintColor paintColor) {
+    switch(paintColor) {
+        case RED:
+            attron(COLOR_PAIR(16));
+            break;
+        case GREEN:
+            attron(COLOR_PAIR(17));
+            break;
+        case CYAN:
+            attron(COLOR_PAIR(18));
+            break;
+        case MAGENTA:
+            attron(COLOR_PAIR(19));
+            break;
+        }
+}
+
+void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cleaner** cleaners, int numberOfCleaners, PaintSupply* paintSupply) {
 
     loadMap();
 
@@ -344,6 +429,8 @@ void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cle
             clear();
             drawMap();
 
+
+
             drawArtistsTable(artists, numberOfArtists);
 
             drawWall(wall);
@@ -351,9 +438,11 @@ void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cle
             drawArtistsNearWall(artists, numberOfArtists);
             drawArtistsWaiting(artists, numberOfArtists);
             drawArtistsWaitingForRefill(artists, numberOfArtists);
+            drawArtistRefilling(artists, numberOfArtists);
 
             drawCleanersNearWall(cleaners, numberOfCleaners);
             drawCleanersWaiting(cleaners, numberOfCleaners);
+            drawPaintSupply(paintSupply);
 
             timeout(125);
         }

@@ -3,8 +3,8 @@
 #include <thread>
 #include <chrono>
 
-int Cleaner::randomnessRange = 200;//0;
-int Cleaner::randomnessBase = 200;//0;
+int Cleaner::randomnessRange = 2000;
+int Cleaner::randomnessBase = 2000;
 
 Cleaner::Cleaner(int identifier, Wall* wall) : identifier(identifier),
     wall(wall), isRunning(true), currentProgress(0)

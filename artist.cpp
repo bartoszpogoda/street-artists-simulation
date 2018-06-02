@@ -6,8 +6,9 @@
 int Artist::randomnessRange = 2000;//200;//0;
 int Artist::randomnessBase = 2000;//200;//0;
 
-Artist::Artist(int identifier, Wall* wall) : identifier(identifier),
-    wall(wall), isRunning(true), currentProgress(0), paintCan(GREEN, 2)
+Artist::Artist(int identifier, Wall* wall, PaintSupply* paintSupply) : identifier(identifier),
+    wall(wall), isRunning(true), currentProgress(0), paintCan(GREEN, 2),
+    paintSupply(paintSupply)
 {
 
 }
@@ -30,7 +31,7 @@ void Artist::waitNSteps(int n, int stepTime) {
 
 void Artist::lifeCycle() {
 
-    int stepTime = randomStepTime();
+    this->stepTime = randomStepTime();
 
     while(this->isRunning) {
 
@@ -73,9 +74,6 @@ void Artist::lifeCycle() {
         }
 
         if(paintCan.getCurrentCapacity() == 0){
-            this->state = WaitingForRefill;
-            waitNSteps(10, stepTime);
-
             this->refillPaint();
         }
 
@@ -85,11 +83,18 @@ void Artist::lifeCycle() {
 
 void Artist::refillPaint() {
 
-    int a = rand() % 4;
-    PaintColor color = a == 0 ? RED : a == 1 ? GREEN : a == 2 ? MAGENTA : CYAN;
-    int size = rand() % 2 ? 4 : 8;
+    this->state = WaitingForRefill;
 
-    this->paintCan = PaintCan(color, size);
+    paintSupply->enterPaintSupply();
+
+    this->state = Refilling;
+
+    waitNSteps(5, stepTime);
+
+    this->paintCan = paintSupply->aquirePaintCan();
+
+    paintSupply->leavePaintSupply();
+
 }
 
 void Artist::stop() {
