@@ -11,12 +11,12 @@
 #include "visualisation.h"
 #include "paintsupply.h"
 #include "supplier.h"
+#include "colors.h"
 
 const int width = 7;
 const int height = 10;//5;
 const int numberOfArtists = 7;
 const int numberOfCleaners = 2;
-const int numberOfSuppliers = 3;
 const int supplySize = 13;
 
 
@@ -28,11 +28,14 @@ PaintSupply* createPaintSupply() {
     return new PaintSupply(supplySize);
 }
 
+const int numberOfSuppliers = 2;
+
 Supplier** createSuppliers(PaintSupply* paintSupply) {
     Supplier** suppliers = new Supplier*[numberOfSuppliers];
-    for(int i = 0 ; i < numberOfSuppliers ; i++) {
-      suppliers[i] = new Supplier(paintSupply);
-    }
+
+    suppliers[0] = new Supplier(paintSupply, new PaintColor[4] {RED, RED, RED, CYAN}, 4, new int[2]{4,8}, 2);
+    suppliers[1] = new Supplier(paintSupply, new PaintColor[1] {GREEN}, 1, new int[1]{4}, 1);
+
     return suppliers;
 }
 

@@ -3,11 +3,13 @@
 #include <thread>
 #include <chrono>
 
-Supplier::Supplier(PaintSupply* paintSupply) : paintSupply(paintSupply), isRunning(true)
+Supplier::Supplier(PaintSupply* paintSupply, PaintColor* colors, int colorsLength, int* sizes, int sizesLength) :
+    paintSupply(paintSupply), isRunning(true),
+    colors(colors), colorsLength(colorsLength),
+    sizes(sizes), sizesLength(sizesLength)
 {
 
 }
-
 
 int Supplier::randomStepTime() {
     return (2000 + rand() % 2000)/10;
@@ -31,7 +33,7 @@ void Supplier::lifeCycle() {
     while(this->isRunning) {
 
         waitNSteps(10, stepTime);
-        paintSupply->supplyPaintCan(PaintCan(RED,1));
+        paintSupply->supplyPaintCan(PaintCan(colors[rand() % colorsLength],sizes[rand() % sizesLength]));
 
     }
 

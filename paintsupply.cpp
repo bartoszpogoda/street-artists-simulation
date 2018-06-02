@@ -30,16 +30,7 @@ PaintCan PaintSupply::aquirePaintCan() {
 }
 
 
-void PaintSupply::supplyPaintCan(PaintCan paintCan2) {
-
-
-    // Temp:
-    int a = rand() % 4;
-    PaintColor color = a == 0 ? RED : a == 1 ? GREEN : a == 2 ? MAGENTA : CYAN;
-    int size = rand() % 2 ? 4 : 8;
-
-    PaintCan paintCan = PaintCan(color, size);
-
+void PaintSupply::supplyPaintCan(PaintCan paintCan) {
 
     std::unique_lock<std::mutex> l(this->_lock);
 
@@ -57,21 +48,6 @@ void PaintSupply::supplyPaintCan(PaintCan paintCan2) {
 
     l.unlock();
     _cv.notify_one();
-
-
-
-//    _supplyQueueMutex.lock();
-
-
-//    std::unique_lock<std::mutex> l(this->_lock);
-
-//    supplyEmpty = false;
-
-//    l.unlock();
-//    _cv.notify_one();
-
-//    _supplyQueueMutex.unlock();
-
 
 }
 
