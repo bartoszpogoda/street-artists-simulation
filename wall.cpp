@@ -11,34 +11,6 @@ Wall::Wall(int width, int height)  : width(width), height(height), freeSegments(
 
 }
 
-WallSegment* Wall::aquireWallSegment() {
-
-    std::unique_lock<std::mutex> l(this->_lock);
-
-    this->_cv.wait(l, [this](){return this->freeSegments > 0;}); // waits until some segment is released
-
-    WallSegment* firstFreeSegment = nullptr;
-
-    for(int i = 0 ; i < width ; i++) {
-        if(this->wallSegments[i]->isOccupied() == false) {
-            firstFreeSegment = this->wallSegments[i];
-            break;
-        }
-    }
-
-    // Assertion
-    if(firstFreeSegment == nullptr) {
-        std::cout << "ASSERTION FAILED: First free segment was nullptr";
-    }
-
-    firstFreeSegment->occupy();
-    this->freeSegments -= 1;
-
-    l.unlock();
-
-    return firstFreeSegment;
-}
-
 WallSegment* Wall::aquireWallSegmentToClean() {
     std::unique_lock<std::mutex> l(this->_lock);
 

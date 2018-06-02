@@ -11,7 +11,8 @@ SOURCES += main.cpp \
     cleaner.cpp \
     artist.cpp \
     paintsupply.cpp \
-    supplier.cpp
+    supplier.cpp \
+    hotel.cpp
 
 LIBS += -lncurses
 
@@ -24,7 +25,9 @@ HEADERS += \
     colors.h \
     paintcan.h \
     paintsupply.h \
-    supplier.h
+    supplier.h \
+    hotelroom.h \
+    hotel.h
 
 DISTFILES += \
     map.txt \

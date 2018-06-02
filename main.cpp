@@ -12,12 +12,14 @@
 #include "paintsupply.h"
 #include "supplier.h"
 #include "colors.h"
+#include "hotel.h"
 
 const int width = 7;
 const int height = 10;//5;
 const int numberOfArtists = 7;
 const int numberOfCleaners = 2;
 const int supplySize = 13;
+const int hotelSize = 4;
 
 
 Wall* createWall() {
@@ -26,6 +28,10 @@ Wall* createWall() {
 
 PaintSupply* createPaintSupply() {
     return new PaintSupply(supplySize);
+}
+
+Hotel* createHotel() {
+    return new Hotel(hotelSize);
 }
 
 const int numberOfSuppliers = 2;
@@ -47,10 +53,10 @@ Artist** createArtists(Wall* wall, PaintSupply* paintSupply) {
     return artists;
 }
 
-Cleaner** createCleaners(Wall* wall) {
+Cleaner** createCleaners(Wall* wall, Hotel* hotel) {
     Cleaner** cleaners = new Cleaner*[numberOfCleaners];
     for(int i = 0 ; i < numberOfCleaners ; i++) {
-      cleaners[i] = new Cleaner(i, wall);
+      cleaners[i] = new Cleaner(i, wall, hotel);
     }
     return cleaners;
 }
@@ -61,9 +67,10 @@ int main(int argc, char *argv[])
     srand(time(NULL));
 
     Wall* wall = createWall();
+    Hotel* hotel = createHotel();
     PaintSupply* paintSupply = createPaintSupply();
     Artist** artists = createArtists(wall, paintSupply);
-    Cleaner** cleaners = createCleaners(wall);
+    Cleaner** cleaners = createCleaners(wall, hotel);
     Supplier** suppliers = createSuppliers(paintSupply);
 
     // start artists
@@ -85,7 +92,7 @@ int main(int argc, char *argv[])
     }
 
     Visualisation visualisation = Visualisation();
-    visualisation.start(wall, artists, numberOfArtists, cleaners, numberOfCleaners, paintSupply);
+    visualisation.start(wall, artists, numberOfArtists, cleaners, numberOfCleaners, paintSupply, hotel);
 
     // after ESC was pressed
     for(int i = 0 ; i < numberOfArtists ; i++) {

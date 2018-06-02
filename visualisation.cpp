@@ -133,6 +133,59 @@ void Visualisation::drawWall(Wall *wall) {
 
 }
 
+void Visualisation::drawRoom(int bottomRightX, int bottomRightY, bool isFree) {
+    // bed white
+    for(int i = bottomRightX - 1 ; i >= bottomRightX - 2 ; i--) {
+        move(bottomRightY, i);
+        attron(COLOR_PAIR(7));
+        addch('x');
+    }
+    // bed red
+    for(int i = bottomRightX - 3 ; i >= bottomRightX - 6 ; i--) {
+        move(bottomRightY, i);
+        attron(COLOR_PAIR(9));
+        addch('x');
+    }
+
+    // ceiling
+    for(int i = bottomRightX ; i >= bottomRightX - 10 ; i--) {
+        move(bottomRightY - 3, i);
+        attron(COLOR_PAIR(14));
+        addch('x');
+    }
+
+    // wall
+    move(bottomRightY - 2, bottomRightX - 10);
+    attron(COLOR_PAIR(14));
+    addch('x');
+
+    // door
+    if(!isFree) {
+        for(int i = bottomRightY ; i >= bottomRightY -1 ; i--) {
+            move(i, bottomRightX - 10);
+            attron(COLOR_PAIR(9));
+            addch('x');
+        }
+    }
+}
+
+void Visualisation::drawHotel(Hotel *hotel) {
+    const int basementRightX = 79;
+    const int basementRightY = 23;
+
+    int numberOfRooms = hotel->getNumberOfRooms();
+
+    for(int i = 0; i < numberOfRooms * 4 ; i++) {
+        move(basementRightY - i, basementRightX - 10);
+        attron(COLOR_PAIR(10));
+        printw("           ");
+    }
+
+    for(int i = 0; i < numberOfRooms ; i++) {
+        drawRoom(basementRightX, basementRightY - i * 4, hotel->getRoom(i)->isFree()); // not sure 3 or 4
+    }
+}
+
 void Visualisation::drawArtistsNearWall(Artist** artists, int numberOfArtists) {
 
     const int wallBottomX = 20;
@@ -299,6 +352,53 @@ void Visualisation::drawCleanersNearWall(Cleaner** cleaners, int numberOfCleaner
 }
 
 
+void Visualisation::drawCleanersWaitingForRoom(Cleaner** cleaners, int numberOfCleaners) {
+
+    const int waitingForRoomBottomX = 65;
+    const int waitingForRoomBottomY = 20;
+
+    int index = 0;
+    for(int i = 0 ; i < numberOfCleaners ; i++) {
+        if(cleaners[i]->getState() == WaitingForRoom) {
+
+            move(waitingForRoomBottomY + 2, waitingForRoomBottomX - index * 2);
+            attron(COLOR_PAIR(5));
+            addch('x');
+
+            move(waitingForRoomBottomY + 3, waitingForRoomBottomX - index * 2);
+            attron(COLOR_PAIR(11));
+            addch('0' + cleaners[i]->getIdentifier());
+
+            index++;
+
+        }
+    }
+}
+
+void Visualisation::drawCleanersSleeping(Cleaner** cleaners, int numberOfCleaners) {
+    const int basementRightX = 79;
+    const int basementRightY = 23;
+
+        for(int i = 0 ; i < numberOfCleaners ; i++) {
+            if(cleaners[i]->getState() == Sleeping) {
+
+                int roomId = cleaners[i]->getOccupiedHotelRoom()->getId();
+
+                // face
+                move(basementRightY - roomId * 4 - 1, basementRightX - 2);
+                attron(COLOR_PAIR(5));
+                addch('x');
+
+                // shirt
+                move(basementRightY - roomId * 4, basementRightX - 8);
+                attron(COLOR_PAIR(11));
+                addch('0' + cleaners[i]->getIdentifier());
+
+            }
+        }
+
+}
+
 void Visualisation::drawPaintSupply(PaintSupply* paintSupply) {
 
     const int suplyRightX = 17;
@@ -417,7 +517,7 @@ void Visualisation::setDrawingColorWithLabel(PaintColor paintColor) {
         }
 }
 
-void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cleaner** cleaners, int numberOfCleaners, PaintSupply* paintSupply) {
+void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cleaner** cleaners, int numberOfCleaners, PaintSupply* paintSupply, Hotel* hotel) {
 
     loadMap();
 
@@ -435,6 +535,8 @@ void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cle
 
             drawWall(wall);
 
+            drawHotel(hotel);
+
             drawArtistsNearWall(artists, numberOfArtists);
             drawArtistsWaiting(artists, numberOfArtists);
             drawArtistsWaitingForRefill(artists, numberOfArtists);
@@ -442,6 +544,8 @@ void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cle
 
             drawCleanersNearWall(cleaners, numberOfCleaners);
             drawCleanersWaiting(cleaners, numberOfCleaners);
+            drawCleanersWaitingForRoom(cleaners, numberOfCleaners);
+            drawCleanersSleeping(cleaners, numberOfCleaners);
             drawPaintSupply(paintSupply);
 
             timeout(125);

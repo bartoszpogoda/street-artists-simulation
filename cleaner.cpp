@@ -6,8 +6,8 @@
 int Cleaner::randomnessRange = 2000;
 int Cleaner::randomnessBase = 2000;
 
-Cleaner::Cleaner(int identifier, Wall* wall) : identifier(identifier),
-    wall(wall), isRunning(true), currentProgress(0)
+Cleaner::Cleaner(int identifier, Wall* wall, Hotel* hotel) : identifier(identifier),
+    wall(wall), hotel(hotel), isRunning(true), currentProgress(0)
 {
 }
 
@@ -30,7 +30,7 @@ void Cleaner::waitNSteps(int n, int stepTime) {
 
 void Cleaner::lifeCycle() {
 
-    int stepTime = randomStepTime();
+    stepTime = randomStepTime();
 
     while(this->isRunning) {
 
@@ -58,11 +58,33 @@ void Cleaner::lifeCycle() {
         }
 
         wall->releaseSegment(this->standingBy);
+
         this->standingBy = nullptr;
 
-        this->state = CWaitingForWall;
+
+        // temp here
+        haveARest();
 
     }
+
+}
+
+
+void Cleaner::haveARest() {
+
+    this->state = WaitingForRoom;
+    waitNSteps(5, stepTime);
+
+    occupiedRoom = this->hotel->aquireFreeRoom();
+
+    this->state = Sleeping;
+    waitNSteps(15, stepTime);
+
+    this->hotel->releaseRoom(occupiedRoom);
+
+    occupiedRoom = nullptr;
+    this->state = CWaitingForWall;
+
 
 }
 

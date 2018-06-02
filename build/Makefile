@@ -55,7 +55,8 @@ SOURCES       = ../main.cpp \
 		../cleaner.cpp \
 		../artist.cpp \
 		../paintsupply.cpp \
-		../supplier.cpp 
+		../supplier.cpp \
+		../hotel.cpp 
 OBJECTS       = main.o \
 		visualisation.o \
 		wallsegment.o \
@@ -63,7 +64,8 @@ OBJECTS       = main.o \
 		cleaner.o \
 		artist.o \
 		paintsupply.o \
-		supplier.o
+		supplier.o \
+		hotel.o
 DIST          = ../map.txt \
 		map.txt \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -126,14 +128,17 @@ DIST          = ../map.txt \
 		colors.h \
 		paintcan.h \
 		paintsupply.h \
-		supplier.h ../main.cpp \
+		supplier.h \
+		hotelroom.h \
+		hotel.h ../main.cpp \
 		../visualisation.cpp \
 		../wallsegment.cpp \
 		../wall.cpp \
 		../cleaner.cpp \
 		../artist.cpp \
 		../paintsupply.cpp \
-		../supplier.cpp
+		../supplier.cpp \
+		../hotel.cpp
 QMAKE_TARGET  = street-artists-simulation
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = street-artists-simulation
@@ -318,6 +323,8 @@ main.o: ../main.cpp ../artist.h \
 		../paintcan.h \
 		../paintsupply.h \
 		../cleaner.h \
+		../hotel.h \
+		../hotelroom.h \
 		../visualisation.h \
 		../supplier.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../main.cpp
@@ -329,7 +336,9 @@ visualisation.o: ../visualisation.cpp ../visualisation.h \
 		../colors.h \
 		../paintcan.h \
 		../paintsupply.h \
-		../cleaner.h
+		../cleaner.h \
+		../hotel.h \
+		../hotelroom.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o visualisation.o ../visualisation.cpp
 
 wallsegment.o: ../wallsegment.cpp ../wallsegment.h \
@@ -345,7 +354,9 @@ wall.o: ../wall.cpp ../wall.h \
 cleaner.o: ../cleaner.cpp ../cleaner.h \
 		../wall.h \
 		../wallsegment.h \
-		../colors.h
+		../colors.h \
+		../hotel.h \
+		../hotelroom.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cleaner.o ../cleaner.cpp
 
 artist.o: ../artist.cpp ../artist.h \
@@ -366,6 +377,10 @@ supplier.o: ../supplier.cpp ../supplier.h \
 		../paintcan.h \
 		../colors.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o supplier.o ../supplier.cpp
+
+hotel.o: ../hotel.cpp ../hotel.h \
+		../hotelroom.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o hotel.o ../hotel.cpp
 
 ####### Install
 

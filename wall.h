@@ -22,9 +22,6 @@ private:
 public:
     Wall(int width, int height);
 
-    /** Waits to aquire wall segment to use. */
-    WallSegment* aquireWallSegment();
-
     /** Wait and then aquire a segment which is not fully painted. */
     WallSegment* aquireWallSegmentToPaint();
 
