@@ -25,21 +25,12 @@ private:
 
     std::atomic<ArtistState> state;
 
-    int currentProgress; // out of 10
-
-    int stepTime;
-
-    int randomStepTime();
-    void waitNSteps(int n, int stepTime);
-
     void refillPaint();
 
 public:
     Artist(int identifier, Wall* wall, PaintSupply* paintSupply);
 
     ArtistState getState() { return this->state; }
-
-    int getCurrentProgress() { return this->currentProgress; }
 
     WallSegment* getStandingBy() { return this->standingBy; }
 
@@ -51,8 +42,6 @@ public:
 
     void stop();
 
-    static int randomnessRange;
-    static int randomnessBase;
 };
 
 #endif ARTIST_H

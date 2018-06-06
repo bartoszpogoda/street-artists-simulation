@@ -15,9 +15,10 @@
 #include "hotel.h"
 
 const int width = 7;
-const int height = 10;//5;
-const int numberOfArtists = 7;
-const int numberOfCleaners = 2;
+const int height = 10;
+const int numberOfArtists = 5;
+const int numberOfCleaners = 6;
+const int numberOfSuppliers = 2;
 const int supplySize = 13;
 const int hotelSize = 4;
 
@@ -34,7 +35,6 @@ Hotel* createHotel() {
     return new Hotel(hotelSize);
 }
 
-const int numberOfSuppliers = 2;
 
 Supplier** createSuppliers(PaintSupply* paintSupply) {
     Supplier** suppliers = new Supplier*[numberOfSuppliers];
@@ -95,23 +95,47 @@ int main(int argc, char *argv[])
     visualisation.start(wall, artists, numberOfArtists, cleaners, numberOfCleaners, paintSupply, hotel);
 
     // after ESC was pressed
+    for(int i = 0 ; i < numberOfCleaners ; i++) {
+        cleaners[i]->stop();
+    }
     for(int i = 0 ; i < numberOfArtists ; i++) {
         artists[i]->stop();
     }
+    for(int i = 0 ; i < numberOfSuppliers ; i++) {
+        suppliers[i]->stop();
+    }
 
-    // stop join and clean up cleaners the same way TODO and suppliers
+
+    for(int i = 0 ; i < numberOfSuppliers; i++) {
+        supplierThreads[i].join();
+    }
+
+    for(int i = 0 ; i < numberOfCleaners; i++) {
+        cleanerThreads[i].join();
+    }
 
     for(int i = 0 ; i < numberOfArtists; i++) {
         artistThreads[i].join();
     }
 
 
+
     // clean up
+    for(int i = 0 ; i < numberOfSuppliers ; i++) {
+        delete suppliers[i];
+    }
+    for(int i = 0 ; i < numberOfCleaners ; i++) {
+        delete cleaners[i];
+    }
     for(int i = 0 ; i < numberOfArtists ; i++) {
         delete artists[i];
     }
+    delete[] suppliers;
+    delete[] cleaners;
     delete[] artists;
 
+    delete[] supplierThreads;
+    delete[] cleanerThreads;
     delete[] artistThreads;
 
     return 0;

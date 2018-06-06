@@ -26,22 +26,18 @@ private:
 
     HotelRoom* occupiedRoom;
 
+    int energy;
+
+    int maxEnergy;
+
     std::atomic<CleanerState> state;
-
-    int currentProgress; // out of 10
-
-    int stepTime;
-    int randomStepTime();
-    void waitNSteps(int n, int stepTime);
 
     void haveARest();
 
 public:
-    Cleaner(int identifier, Wall* wall, Hotel* hotel);
+    Cleaner(int identifier, Wall* wall, Hotel* hotel) : isRunning(true), identifier(identifier), wall(wall), hotel(hotel), maxEnergy(10), energy(10) {}
 
     CleanerState getState() { return this->state; }
-
-    int getCurrentProgress() { return this->currentProgress; }
 
     WallSegment* getStandingBy() { return this->standingBy; }
 
@@ -49,12 +45,14 @@ public:
 
     int getIdentifier() { return this->identifier; }
 
+    int getEnergy() { return this->energy; }
+
+    int getMaxEnergy() { return this->maxEnergy; }
+
     void lifeCycle();
 
     void stop();
 
-    static int randomnessRange;
-    static int randomnessBase;
 };
 
 #endif // CLEANER_H

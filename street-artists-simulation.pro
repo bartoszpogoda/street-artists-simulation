@@ -12,7 +12,8 @@ SOURCES += main.cpp \
     artist.cpp \
     paintsupply.cpp \
     supplier.cpp \
-    hotel.cpp
+    hotel.cpp \
+    randomness.cpp
 
 LIBS += -lncurses
 
@@ -27,7 +28,8 @@ HEADERS += \
     paintsupply.h \
     supplier.h \
     hotelroom.h \
-    hotel.h
+    hotel.h \
+    randomness.h
 
 DISTFILES += \
     map.txt \

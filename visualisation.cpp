@@ -1,5 +1,6 @@
 #include "visualisation.h"
 #include "ncurses.h"
+#include "randomness.h"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -60,44 +61,32 @@ void Visualisation::initColors() {
     bkgd(COLOR_PAIR(1));
 }
 
-void Visualisation::drawLegend() {
+void Visualisation::drawConfiguration() {
 
-    attron(COLOR_PAIR(6));
-    move(0,1);
-    printw("Legend: ");
 
-    attron(COLOR_PAIR(4));
-    move(2,3);
-    addch(' ');
+    const int legendTopLeftX = 81;
+    const int legendTopLeftY = 17;
+
+    // if screen is not extended then do not draw anything
+    int x,y;
+    getmaxyx(stdscr, y, x) ;
+
+    if(x < legendTopLeftX + 15) {
+        return;
+    }
+
     attron(COLOR_PAIR(1));
-    printw(" Thinking progress");
+    move(legendTopLeftY + 2, legendTopLeftX);
+    printw("Single operation time range: ");
+    move(legendTopLeftY + 3, legendTopLeftX);
+    printw("[");
+    printw(std::to_string(Randomness::randomnessBase).c_str());
+    printw(", ");
+    printw(std::to_string(Randomness::randomnessRange + Randomness::randomnessBase).c_str());
+    printw(") ms");
+    move(legendTopLeftY + 4, legendTopLeftX);
+    printw("'z', 'x', 'c', 'v'");
 
-    attron(COLOR_PAIR(5));
-    move(3,3);
-    addch(' ');
-    attron(COLOR_PAIR(1));
-    printw(" Eating progress");
-
-    attron(COLOR_PAIR(3));
-    move(4,3);
-    addch('Y');
-    attron(COLOR_PAIR(1));
-    printw(" Fork in use");
-
-    attron(COLOR_PAIR(2));
-    move(5,3);
-    addch('Y');
-    attron(COLOR_PAIR(1));
-    printw(" Fork free");
-
-    move(6,1);
-    attron(COLOR_PAIR(1));
-    printw("\\o/ Philo with hands");
-
-
-    attron(COLOR_PAIR(6));
-    move(0,30);
-    printw("Visualisation: ");
 
 }
 
@@ -208,14 +197,26 @@ void Visualisation::drawArtistsNearWall(Artist** artists, int numberOfArtists) {
 
 }
 
-void Visualisation::drawArtistsTable(Artist** artists, int numberOfArtists) {
+void Visualisation::drawArtistsInfo(Artist** artists, int numberOfArtists) {
 
-    const int tableTopLeftX = 60;
-    const int tableTopLeftY = 2;
+    const int tableTopLeftX = 81;
+    const int tableTopLeftY = 3;
+
+    // if screen is not extended then do not draw anything
+    int x,y;
+    getmaxyx(stdscr, y, x) ;
+
+    if(x < tableTopLeftX + 15) {
+        return;
+    }
+
+    move(tableTopLeftY - 2, tableTopLeftX);
+    attron(COLOR_PAIR(1));
+    printw("Artists paint");
 
     for(int i = 0 ; i < numberOfArtists ; i++) {
-        move(tableTopLeftY + i, tableTopLeftX);
-        attron(COLOR_PAIR(11));
+        move(tableTopLeftY + i*2, tableTopLeftX);
+        attron(COLOR_PAIR(1));
         addch('0' + artists[i]->getIdentifier());
         addch(' ');
 
@@ -227,7 +228,45 @@ void Visualisation::drawArtistsTable(Artist** artists, int numberOfArtists) {
             addch('x');
         }
         for(;j < paintCan.getTotalCapacity(); j++) {
-            attron(COLOR_PAIR(12)); // gray
+            attron(COLOR_PAIR(7));
+            addch('x');
+        }
+
+    }
+}
+
+void Visualisation::drawCleanersInfo(Cleaner** cleaners, int numberOfCleaners) {
+    const int tableTopLeftX = 96;
+    const int tableTopLeftY = 3;
+
+    // if screen is not extended then do not draw anything
+    int x,y;
+    getmaxyx(stdscr, y, x) ;
+
+    if(x < tableTopLeftX + 15) {
+        return;
+    }
+
+    move(tableTopLeftY - 2, tableTopLeftX);
+    attron(COLOR_PAIR(1));
+    printw("Cleaners energy");
+
+    for(int i = 0 ; i < numberOfCleaners ; i++) {
+        move(tableTopLeftY + i*2, tableTopLeftX);
+        attron(COLOR_PAIR(1));
+        addch('0' + cleaners[i]->getIdentifier());
+        addch(' ');
+
+        int energyLevel= cleaners[i]->getEnergy();
+        int maxEnergyLevel= cleaners[i]->getMaxEnergy();
+
+        int j = 0;
+        for(;j < energyLevel ; j++) {
+            attron(COLOR_PAIR(9));
+            addch('x');
+        }
+        for(;j < maxEnergyLevel; j++) {
+            attron(COLOR_PAIR(7));
             addch('x');
         }
 
@@ -526,12 +565,24 @@ void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cle
     nodelay(stdscr, TRUE);
     for (;;) {
         if ((ch = getch()) != 27) {
+
+            // handle configuration keys
+            if(ch == 'z' && Randomness::randomnessBase >= 310) {
+                Randomness::randomnessBase -= 10;
+            } else if(ch == 'x') {
+                Randomness::randomnessBase += 10;
+            } else if(ch == 'c' && Randomness::randomnessRange >= 710) {
+                Randomness::randomnessRange -= 10;
+            } else if (ch == 'v') {
+                Randomness::randomnessRange += 10;
+            }
+
             clear();
             drawMap();
+            drawConfiguration();
 
-
-
-            drawArtistsTable(artists, numberOfArtists);
+            drawArtistsInfo(artists, numberOfArtists);
+            drawCleanersInfo(cleaners, numberOfCleaners);
 
             drawWall(wall);
 

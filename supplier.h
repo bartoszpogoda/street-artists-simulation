@@ -14,10 +14,6 @@ class Supplier
     int* sizes;
     int sizesLength;
 
-
-    int currentProgress; // out of 10
-    int randomStepTime();
-    void waitNSteps(int n, int stepTime);
 public:
     Supplier(PaintSupply* paintSupply, PaintColor* colors, int colorslength, int* sizes, int sizesLength);
 

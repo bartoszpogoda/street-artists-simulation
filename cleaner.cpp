@@ -2,35 +2,11 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include "randomness.h"
 
-int Cleaner::randomnessRange = 2000;
-int Cleaner::randomnessBase = 2000;
-
-Cleaner::Cleaner(int identifier, Wall* wall, Hotel* hotel) : identifier(identifier),
-    wall(wall), hotel(hotel), isRunning(true), currentProgress(0)
-{
-}
-
-int Cleaner::randomStepTime() {
-    return (randomnessBase + rand() % randomnessRange)/10;
-}
-
-
-/**
- * @brief Cleaner::wait10Times sleeps for 10x specified time while incrementing current progress after each step
- * @param stepTime time of each step in miliseconds
- */
-void Cleaner::waitNSteps(int n, int stepTime) {
-    for(currentProgress = 0; currentProgress < n && this->isRunning ; currentProgress++) {
-        std::this_thread::sleep_for (std::chrono::milliseconds(stepTime));
-    }
-    currentProgress = 0;
-}
 
 
 void Cleaner::lifeCycle() {
-
-    stepTime = randomStepTime();
 
     while(this->isRunning) {
 
@@ -39,7 +15,7 @@ void Cleaner::lifeCycle() {
         this->standingBy= wall->aquireWallSegmentToClean();
 
         while(this->standingBy == nullptr) {
-            std::this_thread::sleep_for (std::chrono::milliseconds(50));
+            Randomness::waitNRandomSteps(1);
             this->standingBy = wall->aquireWallSegmentToClean();
         }
 
@@ -48,22 +24,23 @@ void Cleaner::lifeCycle() {
         // paint logic
         int initialCoverage = this->standingBy->getPaintCoverage();
 
-        waitNSteps(1, stepTime);
+        Randomness::waitNRandomSteps(1);
 
         // while anything to paint and not tired(todo)
-        for(int i = initialCoverage; i > 0; i--) {
-            this->standingBy->setPaintCoverage(i - 1);
+        for(int i = initialCoverage; i > 0 && this->energy > 0; i--) {
 
-            waitNSteps(3, stepTime);
+            this->standingBy->setPaintCoverage(i - 1);
+            this->energy -= 1;
+            Randomness::waitNRandomSteps(3);
         }
 
         wall->releaseSegment(this->standingBy);
 
         this->standingBy = nullptr;
 
-
-        // temp here
-        haveARest();
+        if(this->energy == 0) {
+            haveARest();
+        }
 
     }
 
@@ -73,12 +50,16 @@ void Cleaner::lifeCycle() {
 void Cleaner::haveARest() {
 
     this->state = WaitingForRoom;
-    waitNSteps(5, stepTime);
+    Randomness::waitNRandomSteps(5);
 
     occupiedRoom = this->hotel->aquireFreeRoom();
 
     this->state = Sleeping;
-    waitNSteps(15, stepTime);
+
+    while(this->energy < this->maxEnergy) {
+        this->energy += 1;
+        Randomness::waitNRandomSteps(10);
+    }
 
     this->hotel->releaseRoom(occupiedRoom);
 

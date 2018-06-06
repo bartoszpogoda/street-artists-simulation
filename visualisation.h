@@ -18,9 +18,10 @@ private:
 
     void initColors();
 
-    void drawLegend();
+    void drawConfiguration();
 
-    void drawArtistsTable(Artist** artists, int numberOfArtists);
+    void drawArtistsInfo(Artist** artists, int numberOfArtists);
+    void drawCleanersInfo(Cleaner** cleaners, int numberOfCleaners);
 
     void drawArtistsNearWall(Artist** artists, int numberOfArtists);
     void drawArtistsWaiting(Artist** artists, int numberOfArtists);

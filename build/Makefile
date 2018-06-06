@@ -56,7 +56,8 @@ SOURCES       = ../main.cpp \
 		../artist.cpp \
 		../paintsupply.cpp \
 		../supplier.cpp \
-		../hotel.cpp 
+		../hotel.cpp \
+		../randomness.cpp 
 OBJECTS       = main.o \
 		visualisation.o \
 		wallsegment.o \
@@ -65,7 +66,8 @@ OBJECTS       = main.o \
 		artist.o \
 		paintsupply.o \
 		supplier.o \
-		hotel.o
+		hotel.o \
+		randomness.o
 DIST          = ../map.txt \
 		map.txt \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -130,7 +132,8 @@ DIST          = ../map.txt \
 		paintsupply.h \
 		supplier.h \
 		hotelroom.h \
-		hotel.h ../main.cpp \
+		hotel.h \
+		randomness.h ../main.cpp \
 		../visualisation.cpp \
 		../wallsegment.cpp \
 		../wall.cpp \
@@ -138,7 +141,8 @@ DIST          = ../map.txt \
 		../artist.cpp \
 		../paintsupply.cpp \
 		../supplier.cpp \
-		../hotel.cpp
+		../hotel.cpp \
+		../randomness.cpp
 QMAKE_TARGET  = street-artists-simulation
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = street-artists-simulation
@@ -338,7 +342,8 @@ visualisation.o: ../visualisation.cpp ../visualisation.h \
 		../paintsupply.h \
 		../cleaner.h \
 		../hotel.h \
-		../hotelroom.h
+		../hotelroom.h \
+		../randomness.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o visualisation.o ../visualisation.cpp
 
 wallsegment.o: ../wallsegment.cpp ../wallsegment.h \
@@ -381,6 +386,9 @@ supplier.o: ../supplier.cpp ../supplier.h \
 hotel.o: ../hotel.cpp ../hotel.h \
 		../hotelroom.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o hotel.o ../hotel.cpp
+
+randomness.o: ../randomness.cpp ../randomness.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o randomness.o ../randomness.cpp
 
 ####### Install
 
