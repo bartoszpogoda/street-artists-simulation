@@ -58,7 +58,7 @@ void Cleaner::haveARest() {
 
     while(this->energy < this->maxEnergy) {
         this->energy += 1;
-        Randomness::waitNRandomSteps(10);
+        Randomness::waitNRandomSteps(3);
     }
 
     this->hotel->releaseRoom(occupiedRoom);

@@ -164,14 +164,14 @@ void Visualisation::drawHotel(Hotel *hotel) {
 
     int numberOfRooms = hotel->getNumberOfRooms();
 
-    for(int i = 0; i < numberOfRooms * 4 ; i++) {
+    for(int i = 0; i < numberOfRooms * 4 && i < 6 * 4; i++) {
         move(basementRightY - i, basementRightX - 10);
         attron(COLOR_PAIR(10));
         printw("           ");
     }
 
-    for(int i = 0; i < numberOfRooms ; i++) {
-        drawRoom(basementRightX, basementRightY - i * 4, hotel->getRoom(i)->isFree()); // not sure 3 or 4
+    for(int i = 0; i < numberOfRooms && i < 6; i++) {
+        drawRoom(basementRightX, basementRightY - i * 4, hotel->getRoom(i)->isFree());
     }
 }
 
@@ -262,7 +262,7 @@ void Visualisation::drawCleanersInfo(Cleaner** cleaners, int numberOfCleaners) {
 
         int j = 0;
         for(;j < energyLevel ; j++) {
-            attron(COLOR_PAIR(9));
+            attron(COLOR_PAIR(4));
             addch('x');
         }
         for(;j < maxEnergyLevel; j++) {
@@ -423,6 +423,10 @@ void Visualisation::drawCleanersSleeping(Cleaner** cleaners, int numberOfCleaner
 
                 int roomId = cleaners[i]->getOccupiedHotelRoom()->getId();
 
+                if(roomId > 5) {
+                    continue; // 7th room doesn't fit in the screen
+                }
+
                 // face
                 move(basementRightY - roomId * 4 - 1, basementRightX - 2);
                 attron(COLOR_PAIR(5));
@@ -567,14 +571,14 @@ void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cle
         if ((ch = getch()) != 27) {
 
             // handle configuration keys
-            if(ch == 'z' && Randomness::randomnessBase >= 310) {
-                Randomness::randomnessBase -= 10;
+            if(ch == 'z' && Randomness::randomnessBase >= 400) {
+                Randomness::randomnessBase -= 100;
             } else if(ch == 'x') {
-                Randomness::randomnessBase += 10;
-            } else if(ch == 'c' && Randomness::randomnessRange >= 710) {
-                Randomness::randomnessRange -= 10;
+                Randomness::randomnessBase += 100;
+            } else if(ch == 'c' && Randomness::randomnessRange >= 300) {
+                Randomness::randomnessRange -= 100;
             } else if (ch == 'v') {
-                Randomness::randomnessRange += 10;
+                Randomness::randomnessRange += 100;
             }
 
             clear();

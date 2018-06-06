@@ -20,7 +20,7 @@ const int numberOfArtists = 5;
 const int numberOfCleaners = 6;
 const int numberOfSuppliers = 2;
 const int supplySize = 13;
-const int hotelSize = 4;
+const int hotelSize = 3;
 
 
 Wall* createWall() {
