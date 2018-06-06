@@ -99,12 +99,13 @@ void Visualisation::drawWall(Wall *wall) {
 
     for(int i = 0 ; i < wall->getWidth() * 3 ; i++) {
         WallSegment* segmentToDraw = wallSegments[i/3];
+        int height = segmentToDraw->getHeight();
         // painted
         int j = 0;
         for(; j < segmentToDraw->getPaintCoverage() ; j++) {
 
             PaintColor paintColor = segmentToDraw->getPaintColor(j);
-            move(wallBottomY - j, wallBottomX + i);
+            move(wallBottomY - height + j + 1, wallBottomX + i);
             setDrawingColor(paintColor);
             addch('x');
 
@@ -114,7 +115,7 @@ void Visualisation::drawWall(Wall *wall) {
         for(; j < segmentToDraw->getHeight() ; j++) {
 
 
-            move(wallBottomY - j, wallBottomX + i);
+            move(wallBottomY - height + j + 1, wallBottomX + i);
             attron(COLOR_PAIR(7));
             addch('x');
         }
@@ -571,11 +572,11 @@ void Visualisation::start(Wall* wall, Artist** artists, int numberOfArtists, Cle
         if ((ch = getch()) != 27) {
 
             // handle configuration keys
-            if(ch == 'z' && Randomness::randomnessBase >= 400) {
+            if(ch == 'z' && Randomness::randomnessBase >= 200) {
                 Randomness::randomnessBase -= 100;
             } else if(ch == 'x') {
                 Randomness::randomnessBase += 100;
-            } else if(ch == 'c' && Randomness::randomnessRange >= 300) {
+            } else if(ch == 'c' && Randomness::randomnessRange >= 200) {
                 Randomness::randomnessRange -= 100;
             } else if (ch == 'v') {
                 Randomness::randomnessRange += 100;
