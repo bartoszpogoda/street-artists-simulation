@@ -24,14 +24,12 @@ void Cleaner::lifeCycle() {
         // paint logic
         int initialCoverage = this->standingBy->getPaintCoverage();
 
-        Randomness::waitNRandomSteps(1);
-
         // while anything to paint and not tired(todo)
         for(int i = initialCoverage; i > 0 && this->energy > 0; i--) {
 
+            Randomness::waitNRandomSteps(3);
             this->standingBy->setPaintCoverage(i - 1);
             this->energy -= 1;
-            Randomness::waitNRandomSteps(3);
         }
 
         wall->releaseSegment(this->standingBy);
@@ -50,7 +48,6 @@ void Cleaner::lifeCycle() {
 void Cleaner::haveARest() {
 
     this->state = WaitingForRoom;
-    Randomness::waitNRandomSteps(5);
 
     occupiedRoom = this->hotel->aquireFreeRoom();
 

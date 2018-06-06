@@ -17,7 +17,6 @@ void Artist::lifeCycle() {
     while(this->isRunning) {
 
         this->state = WaitingForWall;
-        Randomness::waitNRandomSteps(1);
 
         if(paintCan.getCurrentCapacity() != 0) {
             // paint can not empty
@@ -36,15 +35,12 @@ void Artist::lifeCycle() {
             int initialCoverage = this->standingBy->getPaintCoverage();
             int totalHeight = this->standingBy->getHeight();
 
-            Randomness::waitNRandomSteps(1);
-
             // while anything to paint and paint can not empty
             for(int i = initialCoverage; i < totalHeight && paintCan.getCurrentCapacity() > 0 ; i++) {
+                Randomness::waitNRandomSteps(3);
                 this->standingBy->setPaintCoverage(i + 1);
                 this->standingBy->setPaintColor(i, paintCan.getColor());
                 this->paintCan.decrementCurrentCapacity();
-
-                Randomness::waitNRandomSteps(3);
             }
 
             wall->releaseSegment(this->standingBy);
